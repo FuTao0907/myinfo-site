@@ -52,6 +52,32 @@ const Profile: React.FC = () => {
   }
 
   /**
+   * 将站点配置中的邮箱值转换成可打开邮件客户端的 mailto 链接。
+   */
+  const buildMailtoLink = (email?: string) => {
+    if (!email) {
+      return undefined
+    }
+
+    const trimmedEmail = email.trim()
+
+    if (!trimmedEmail) {
+      return undefined
+    }
+
+    if (trimmedEmail.startsWith('mailto:')) {
+      return trimmedEmail
+    }
+
+    const defaultSubject = encodeURIComponent(`来自 ${siteProfile.siteTitle} 的联系`)
+    const defaultBody = encodeURIComponent(
+      `你好，\n\n我通过你的个人网站联系你。\n\n我想咨询：\n1. \n2. \n\n`
+    )
+
+    return `mailto:${trimmedEmail}?subject=${defaultSubject}&body=${defaultBody}`
+  }
+
+  /**
    * 打开个人信息区外链，缺失时给出提示而不是硬跳转。
    */
   const handleProfileLinkClick = (url: string | undefined, fallbackMessage = '链接暂未配置') => {
@@ -130,7 +156,9 @@ const Profile: React.FC = () => {
           type="button"
           title="Email"
           className="detail-arrow"
-          onClick={() => handleProfileLinkClick(siteProfile.email, '邮箱链接暂未配置')}
+          onClick={() =>
+            handleProfileLinkClick(buildMailtoLink(siteProfile.email), '邮箱链接暂未配置')
+          }
         >
           <Mail className="h-4 w-4" strokeWidth={1.8} />
         </button>
