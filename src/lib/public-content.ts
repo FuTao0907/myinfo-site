@@ -1,10 +1,13 @@
 import {
   BENTO_COMMON_COMPONENTS,
   BENTO_CUSTOM_COMPONENTS,
+  COMMON_ASSETS,
+  HOME_PROFILE_CONFIG,
+  HOME_ASSETS,
   NAV_ITEMS,
   PROJECTS,
-  SITE,
-} from '@/lib/constants/site'
+  SITE_LINKS,
+} from '@/lib/constants/content/index'
 import { getAllPosts, getPostById as getLocalPostById } from '@/lib/helpers/posts'
 import type { PostMeta } from '@/types/post'
 import type { ProjectItem, SiteConfig, SiteProfile } from '@/types/site-config'
@@ -23,29 +26,30 @@ function buildApiUrl(path: string) {
 function getFallbackSiteConfig(): SiteConfig {
   return {
     siteProfile: {
-      siteTitle: SITE.title,
-      authorName: SITE.author,
-      description: SITE.description,
-      profileContent: SITE.profileContent,
-      keywords: SITE.keywords,
-      iconUrl: SITE.icon,
+      siteTitle: HOME_PROFILE_CONFIG.title,
+      authorName: HOME_PROFILE_CONFIG.author,
+      description: HOME_PROFILE_CONFIG.description,
+      profileContent: HOME_PROFILE_CONFIG.profileContent,
+      keywords: HOME_PROFILE_CONFIG.keywords,
+      avatarUrl: HOME_ASSETS.profileAvatar,
+      iconUrl: COMMON_ASSETS.siteIcon,
       location: {
-        longitude: SITE.coordinate[0],
-        latitude: SITE.coordinate[1],
+        longitude: HOME_PROFILE_CONFIG.coordinate[0],
+        latitude: HOME_PROFILE_CONFIG.coordinate[1],
       },
-      email: SITE.mail,
-      cvUrl: SITE.cv,
-      juejinUrl: SITE.juejin,
-      githubHome: SITE.githubHome,
-      githubId: SITE.githubId,
-      twitterUrl: SITE.twitterUrl,
-      twitterId: SITE.twitterId,
-      notionUrl: SITE.notion,
-      weeklyUrl: SITE.weeklyUrl,
-      homePage: SITE.homePage,
-      profilePage: SITE.profilePage,
-      repo: SITE.repo,
-      consoleColorFulOutput: SITE.consoleColorFulOutput,
+      email: SITE_LINKS.mail,
+      cvUrl: SITE_LINKS.cv,
+      juejinUrl: SITE_LINKS.juejin,
+      githubHome: SITE_LINKS.githubHome,
+      githubId: SITE_LINKS.githubId,
+      twitterUrl: SITE_LINKS.twitterUrl,
+      twitterId: SITE_LINKS.twitterId,
+      notionUrl: SITE_LINKS.notion,
+      weeklyUrl: SITE_LINKS.weeklyUrl,
+      homePage: SITE_LINKS.homePage,
+      profilePage: SITE_LINKS.profilePage,
+      repo: SITE_LINKS.repo,
+      consoleColorFulOutput: HOME_PROFILE_CONFIG.consoleColorFulOutput,
     },
     navItems: NAV_ITEMS.map((item, index) => ({
       label: item.label,

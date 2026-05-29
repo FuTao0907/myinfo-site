@@ -70,6 +70,7 @@ function getRouteTransitionPreset(transitionName: string): RouteTransitionPreset
  */
 export default function AppShell({ children, siteConfig, searchEntries }: AppShellProps) {
   const pathname = usePathname() || '/'
+  const isFullscreenRoute = pathname.startsWith('/resume')
   const [transitionName, setTransitionName] = useState('page')
   const [hasMounted, setHasMounted] = useState(false)
   const contentRef = useRef<HTMLDivElement>(null)
@@ -125,11 +126,15 @@ export default function AppShell({ children, siteConfig, searchEntries }: AppShe
     <SiteConfigProvider value={siteConfig}>
       <ToastProvider>
         <div className="relative flex min-h-screen flex-col">
-          <SiteHeader />
+          {!isFullscreenRoute ? <SiteHeader /> : null}
           <SearchDialog entries={searchEntries} />
           <main
             id="main-root"
-            className="relative z-10 min-h-[calc(100dvh-var(--site-header-height))] flex-1 overflow-x-hidden px-[10px] py-6 md:px-5 md:py-8"
+            className={`relative z-10 flex-1 overflow-x-hidden ${
+              isFullscreenRoute
+                ? 'min-h-screen px-0 py-0'
+                : 'min-h-[calc(100dvh-var(--site-header-height))] px-[10px] py-6 md:px-5 md:py-8'
+            }`}
           >
             <div ref={contentRef} className="min-h-full">
               {children}

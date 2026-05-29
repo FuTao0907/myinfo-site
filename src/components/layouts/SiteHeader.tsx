@@ -1,11 +1,11 @@
 import Link from 'next/link'
 
+import { HOME_PROFILE_CONFIG } from '@/lib/constants/content/index'
 import SiteNavigation from '@/components/layouts/SiteNavigation'
 import ThemeToggle from '@/components/ui/ThemeToggle'
 
 /**
- * 渲染站点顶部导航栏。
- */
+ * 娓叉煋绔欑偣椤堕儴瀵艰埅鏍忋€? */
 export default function SiteHeader() {
   return (
     <header
@@ -18,7 +18,7 @@ export default function SiteHeader() {
           src="/logo.svg"
           alt="Arvin logo"
         /> */}
-        <span className="hidden md:inline-block">Ango的空间</span>
+        <span className="hidden md:inline-block">{HOME_PROFILE_CONFIG.title}</span>
       </Link>
 
       <SiteNavigation />

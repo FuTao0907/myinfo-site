@@ -2,13 +2,16 @@
 
 import React, { useEffect, useRef, useState } from 'react'
 import { FileText, Github, Mail, RefreshCw } from 'lucide-react'
+import { useRouter } from 'next/navigation'
 import { useSiteConfig } from '@/components/providers/SiteConfigProvider'
 import { useToast } from '@/components/providers/ToastProvider'
+import { HOME_ASSETS } from '@/lib/constants/content/index'
 import { openExternalLink } from '@/lib/helpers/external-link'
 import { ShadowCard } from '../wrapper/ShadowCard'
 import Typed from 'typed.js'
 
 const Profile: React.FC = () => {
+  const router = useRouter()
   const { siteProfile } = useSiteConfig()
   const { showToast } = useToast()
   const typedSpanRef = useRef<HTMLSpanElement>(null)
@@ -71,10 +74,37 @@ const Profile: React.FC = () => {
 
     const defaultSubject = encodeURIComponent(`来自 ${siteProfile.siteTitle} 的联系`)
     const defaultBody = encodeURIComponent(
-      `你好，\n\n我通过你的个人网站联系你。\n\n我想咨询：\n1. \n2. \n\n`
+      `你好：\n\n我通过你的网站联系你。\n\n我想咨询：\n1. \n2. \n\n`
     )
 
     return `mailto:${trimmedEmail}?subject=${defaultSubject}&body=${defaultBody}`
+  }
+
+  /**
+   * 解析简历按钮实际要打开的目标，未配置时回退到站内简历页。
+   */
+  const resolveCvLink = (cvUrl?: string) => {
+    const trimmedUrl = cvUrl?.trim()
+
+    if (!trimmedUrl) {
+      return '/resume'
+    }
+
+    return trimmedUrl
+  }
+
+  /**
+   * 处理简历按钮点击，站内路由走客户端跳转，外链继续走统一打开逻辑。
+   */
+  const handleCvClick = () => {
+    const targetUrl = resolveCvLink(siteProfile.cvUrl)
+
+    if (targetUrl.startsWith('/')) {
+      router.push(targetUrl)
+      return
+    }
+
+    handleProfileLinkClick(targetUrl, '简历链接暂未配置')
   }
 
   /**
@@ -96,15 +126,18 @@ const Profile: React.FC = () => {
             {currentAvatar === 'Arvin' ? (
               <img
                 className="h-full w-full object-cover rounded-full"
-                src="/logo.png"
+                src={siteProfile.avatarUrl || siteProfile.iconUrl || HOME_ASSETS.profileAvatar}
                 alt="logo"
                 onError={(e) => {
-                  ;(e.target as HTMLImageElement).src =
-                    'https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Smilies/Partying%20Face.png'
+                  ;(e.target as HTMLImageElement).src = HOME_ASSETS.profileAvatarFallbackEmoji
                 }}
               />
             ) : (
-              <img className="h-full w-full object-cover rounded-full" src="/logo.png" alt="logo" />
+              <img
+                className="h-full w-full object-cover rounded-full"
+                src={siteProfile.avatarUrl || siteProfile.iconUrl || HOME_ASSETS.profileAvatar}
+                alt="logo"
+              />
             )}
           </div>
           <div className={`avatar-bg ${isExpandingBg ? 'expanding-bg-circle' : ''}`} />
@@ -127,7 +160,7 @@ const Profile: React.FC = () => {
           type="button"
           title="简历"
           className="detail-arrow text-[#1F80FF]"
-          onClick={() => handleProfileLinkClick(siteProfile.cvUrl, '简历链接暂未配置')}
+          onClick={handleCvClick}
         >
           <FileText className="h-4 w-4" strokeWidth={1.8} />
         </button>

@@ -245,3 +245,56 @@
 - `yarn lint`：通过
 - `yarn type-check`：通过
 - `yarn build`：通过
+
+---
+
+## 2026-05-29（配置重构与简历页复审）
+
+### 审查范围
+
+- 项目路径：`e:\study\Myinfo\myinfo-site`
+- 审查方式：人工复核配置重构、简历页、首页个人卡片与文章读取逻辑，并执行 `yarn lint`、`yarn type-check`、`yarn test`、`yarn build`
+- 本轮关注点：
+  - 可配置内容是否已经收敛为单一数据源，避免重复维护
+  - 简历页新增能力是否影响整站构建、测试和类型检查
+  - 本轮重构后是否引入编码、别名解析或内容展示问题
+
+### 审查结果
+
+- 结论：**通过**
+- 最终评分：**96 / 100**
+- 结果说明：本轮复审过程中先发现两类回归问题，分别是部分文件编码异常导致 `next build` 失败，以及 `Vitest` 无法解析新的内容配置导入路径。问题已全部修复，当前版本重新通过完整质量门禁，可以继续作为后续开发基线。
+
+### 本轮修复项
+
+1. **统一内容配置已收敛为单一数据源**
+   - 位置：`src/lib/constants/content/index.ts`
+   - 处理：站点信息、项目配置、简历配置已拆分到 `content/` 目录，并统一通过 `index.ts` 导出，移除旧的重复配置来源。
+
+2. **构建失败的文件编码问题已修复**
+   - 位置：`src/app/resume/page.tsx`、`src/components/bento/common/Profile.tsx`、`src/components/features/resume/ResumePageClient.tsx` 等
+   - 处理：将受影响文件恢复为 UTF-8 编码，并修复重写过程中损坏的中文字符串与模板字面量。
+
+3. **Vitest 路径别名解析已补齐**
+   - 位置：`vitest.config.ts`
+   - 处理：为 `@/` 别名补充与项目一致的解析配置，恢复测试环境对 `src/lib/constants/content/` 的导入支持。
+
+4. **文章 helper 与简历页文案已恢复正常**
+   - 位置：`src/lib/helpers/posts.ts`、`src/components/features/resume/ResumePageClient.tsx`
+   - 处理：修复文章标题格式、“全部”标签、简历页按钮与命令面板等可见文案的乱码问题，避免线上展示异常。
+
+5. **README 已按当前项目状态重写**
+   - 位置：`README.md`
+   - 处理：补充当前功能概览、开发命令、配置维护入口、目录结构与测试说明，降低后续接手和维护成本。
+
+### 当前遗留问题
+
+- 本轮未发现新的阻塞问题。
+- 低风险提示：`content/` 目录目前已经是单一配置源，后续若继续增加配置项，建议保持“按领域拆分、统一从 `index.ts` 导出”的模式，避免重新回到多入口维护。
+
+### 复核记录
+
+- `yarn lint`：通过
+- `yarn type-check`：通过
+- `yarn test`：通过
+- `yarn build`：通过

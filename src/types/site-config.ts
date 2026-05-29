@@ -18,12 +18,18 @@ export interface HomeCardItem {
 
 export interface SiteProfile {
   siteTitle: string
+  /** 首页个人卡片展示的昵称。 */
   authorName: string
+  /** 通用站点描述。 */
   description: string
+  /** 首页个人卡片打字机文案。 */
   profileContent: string
+  /** 站点关键词，简历页也会用于技能标签补充。 */
   keywords: string
+  /** 首页个人卡片头像。 */
   avatarUrl?: string
   heroImageUrl?: string
+  /** 站点通用图标。 */
   iconUrl?: string
   location: {
     longitude: number

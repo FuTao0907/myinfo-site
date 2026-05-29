@@ -6,6 +6,7 @@ import { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
 import { AnimatePresence, motion } from 'framer-motion'
 
+import { SITE_LINKS } from '@/lib/constants/content/index'
 import MarkdownRenderer from '@/components/features/blog/MarkdownRenderer'
 import type { PostMeta } from '@/types/post'
 
@@ -284,7 +285,7 @@ export default function PostClient({ post }: PostClientProps) {
               <div className="flex-1">发布日期: {post.date}</div>
               <div className="mt-4 flex-1 text-right md:mt-0">
                 <a
-                  href="https://github.com/"
+                  href={SITE_LINKS.articleGithubHome}
                   title="Star"
                   target="_blank"
                   rel="noreferrer"
@@ -308,7 +309,6 @@ export default function PostClient({ post }: PostClientProps) {
             <div className="py-4" />
           </div>
         </main>
-
       </div>
 
       {tocPortal}

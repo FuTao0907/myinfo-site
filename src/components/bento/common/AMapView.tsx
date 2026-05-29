@@ -5,7 +5,7 @@ import { createPortal } from 'react-dom'
 import { ArrowUpRight, X } from 'lucide-react'
 
 import { useSiteConfig } from '@/components/providers/SiteConfigProvider'
-import { AMAP_SETTINGS } from '@/lib/constants/site'
+import { AMAP_SETTINGS } from '@/lib/constants/content/index'
 import { lockBodyScroll, unlockBodyScroll } from '@/lib/helpers/body-scroll-lock'
 
 interface ResolvedLocation {
@@ -128,7 +128,7 @@ function buildLocationLabel(result: {
   const district = result.regeocode?.addressComponent?.district
 
   if (city && district) {
-    return `${city} · ${district}`
+    return `${city} ${district}`
   }
 
   if (city) {
@@ -136,14 +136,14 @@ function buildLocationLabel(result: {
   }
 
   if (province && district) {
-    return `${province} · ${district}`
+    return `${province} ${district}`
   }
 
   if (province) {
     return province
   }
 
-  return result.regeocode?.formattedAddress || '当前定位'
+  return result.regeocode?.formattedAddress || '当前位置'
 }
 
 /**
@@ -151,7 +151,7 @@ function buildLocationLabel(result: {
  */
 async function reverseGeocode(longitude: number, latitude: number) {
   if (!AMAP_SETTINGS.key || !AMAP_SETTINGS.securityJsCode) {
-    return '当前定位'
+    return '当前位置'
   }
 
   window._AMapSecurityConfig = {
@@ -177,7 +177,7 @@ async function reverseGeocode(longitude: number, latitude: number) {
         return
       }
 
-      resolve('当前定位')
+      resolve('当前位置')
     })
   })
 }
@@ -205,7 +205,7 @@ function getBrowserLocation() {
 }
 
 /**
- * 初始化高德地图并根据交互场景控制缩放与拖拽。
+ * 初始化高德地图，并根据交互场景控制缩放与拖拽。
  */
 function AMapCanvas({ className, interactive, iconUrl, location, zoom }: AMapCanvasProps) {
   const mapContainer = useRef<HTMLDivElement>(null)
@@ -384,7 +384,7 @@ const AMapView: React.FC = () => {
     let isCancelled = false
 
     /**
-     * 优先使用浏览器定位，失败时继续使用默认北京坐标。
+     * 优先使用浏览器定位，失败时继续使用默认坐标。
      */
     async function resolveCurrentLocation() {
       const position = await getBrowserLocation()
@@ -411,7 +411,7 @@ const AMapView: React.FC = () => {
           setResolvedLocation({
             longitude: nextLongitude,
             latitude: nextLatitude,
-            label: '当前定位',
+            label: '当前位置',
           })
         }
       }

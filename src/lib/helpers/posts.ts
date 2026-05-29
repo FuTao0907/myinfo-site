@@ -3,11 +3,11 @@ import path from 'node:path'
 import { cache } from 'react'
 import matter from 'gray-matter'
 
+import { COMMON_ASSETS } from '@/lib/constants/content/index'
 import type { PostFrontmatter, PostMeta } from '@/types/post'
 
 const BLOG_ROOT = path.join(process.cwd(), 'src', 'blog')
-const DEFAULT_COVER =
-  'https://images.unsplash.com/photo-1555066931-4365d14bab8c?q=80&w=2070&auto=format&fit=crop'
+const DEFAULT_COVER = COMMON_ASSETS.defaultPostCover
 const DEFAULT_DATE = '2024/01/01'
 
 /**
@@ -56,7 +56,7 @@ function resolvePostTitle(
   const [, issue, titleName] = match
 
   return {
-    title: `第${issue}期 - ${titleName}`,
+    title: `第${issue}篇 - ${titleName}`,
     plainTitle,
     postIndex: Number.parseInt(issue, 10),
   }
@@ -130,5 +130,8 @@ export function getPostById(id: string): PostMeta | undefined {
  * 生成用于筛选展示的标签列表。
  */
 export function getPostTags(posts: PostMeta[]): string[] {
-  return ['全部', ...Array.from(new Set(posts.flatMap((post) => post.tags).filter((tag) => tag !== '全部')))]
+  return [
+    '全部',
+    ...Array.from(new Set(posts.flatMap((post) => post.tags).filter((tag) => tag !== '全部'))),
+  ]
 }

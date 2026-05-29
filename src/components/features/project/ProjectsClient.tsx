@@ -2,8 +2,10 @@
 
 import { ArrowUpRight, ExternalLink, Github, X } from 'lucide-react'
 import { useEffect, useState } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
 
 import { ShadowCard } from '@/components/bento/wrapper/ShadowCard'
+import { COMMON_ASSETS } from '@/lib/constants/content/index'
 import { useToast } from '@/components/providers/ToastProvider'
 import { lockBodyScroll, unlockBodyScroll } from '@/lib/helpers/body-scroll-lock'
 import { openExternalLink } from '@/lib/helpers/external-link'
@@ -18,9 +20,12 @@ interface ProjectsClientProps {
  */
 export default function ProjectsClient({ projects }: ProjectsClientProps) {
   const { showToast } = useToast()
+  const router = useRouter()
+  const searchParams = useSearchParams()
   const [isOpen, setIsOpen] = useState(false)
   const [currentProject, setCurrentProject] = useState<ProjectItem | null>(null)
   const visibleProjects = projects.filter((project) => project.status === 'published')
+  const activeSlug = searchParams.get('slug')
 
   useEffect(() => {
     if (!isOpen) {
@@ -34,9 +39,28 @@ export default function ProjectsClient({ projects }: ProjectsClientProps) {
     }
   }, [isOpen])
 
+  /**
+   * 打开项目详情弹层，并同步当前项目到地址栏查询参数。
+   */
   const openModal = (project: ProjectItem) => {
     setCurrentProject(project)
     setIsOpen(true)
+
+    if (activeSlug !== project.slug) {
+      router.replace(`/project?slug=${encodeURIComponent(project.slug)}`, { scroll: false })
+    }
+  }
+
+  /**
+   * 关闭项目详情弹层，并清理地址栏中的项目 slug。
+   */
+  const closeModal = () => {
+    setCurrentProject(null)
+    setIsOpen(false)
+
+    if (activeSlug) {
+      router.replace('/project', { scroll: false })
+    }
   }
 
   /**
@@ -47,6 +71,24 @@ export default function ProjectsClient({ projects }: ProjectsClientProps) {
       showToast(emptyMessage)
     }
   }
+
+  /**
+   * 根据路由中的 slug 自动打开对应项目，支持从其他页面直接跳入目标项目。
+   */
+  useEffect(() => {
+    if (!activeSlug) {
+      return
+    }
+
+    const matchedProject = visibleProjects.find((project) => project.slug === activeSlug)
+
+    if (!matchedProject) {
+      return
+    }
+
+    setCurrentProject(matchedProject)
+    setIsOpen(true)
+  }, [activeSlug, visibleProjects])
 
   return (
     <div>
@@ -63,8 +105,7 @@ export default function ProjectsClient({ projects }: ProjectsClientProps) {
                   alt={project.name}
                   className="pointer-events-none block h-full min-h-[213px] min-w-[270px] w-full rounded-[6px] object-cover"
                   onError={(event) => {
-                    event.currentTarget.src =
-                      'https://images.unsplash.com/photo-1555066931-4365d14bab8c?q=80&w=2070&auto=format&fit=crop'
+                    event.currentTarget.src = COMMON_ASSETS.defaultProjectCover
                   }}
                 />
               </div>
@@ -72,7 +113,7 @@ export default function ProjectsClient({ projects }: ProjectsClientProps) {
               <div className="pointer-events-auto absolute bottom-0 left-0 z-[10] flex w-full items-center justify-between p-[10px] text-[16px] leading-7 text-[var(--project-card-text)]">
                 <button
                   type="button"
-                  className="inline-flex gap-[0.5] pr-[0.5] text-[0.95em] leading-none hover:underline"
+                className="inline-flex gap-[0.5] pr-[0.5] text-[0.95em] leading-none hover:underline"
                   onClick={(event) => {
                     event.stopPropagation()
                     handleProjectLinkClick(project.demoUrl, '项目演示地址暂未配置')
@@ -102,7 +143,7 @@ export default function ProjectsClient({ projects }: ProjectsClientProps) {
               <button
                 type="button"
                 className="cursor-pointer border-0 bg-transparent hover:opacity-50"
-                onClick={() => setIsOpen(false)}
+                onClick={closeModal}
               >
                 <X className="h-6 w-6" />
               </button>
