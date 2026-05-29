@@ -18,7 +18,7 @@ jobs:
           key: ${{ secrets.SERVER_KEY }}
           script: |
             cd ${{ secrets.SERVER_PATH }}
-            git pull origin master
+            git pull origin main
             yarn
             yarn build
             pm2 restart philia093
