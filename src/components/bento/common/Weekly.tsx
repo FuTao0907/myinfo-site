@@ -1,11 +1,13 @@
 import React from 'react'
-import Link from 'next/link'
 import { ArrowUpRight } from 'lucide-react'
 import { HOME_ASSETS } from '@/lib/constants/content/index'
+import BentoActionButton from '../wrapper/BentoActionButton'
+import BentoCornerAction from '../wrapper/BentoCornerAction'
+import BentoMediaSurface from '../wrapper/BentoMediaSurface'
 
 const Weekly: React.FC = () => {
   return (
-    <div className="relative select-none overflow-hidden rounded-[10px] bg-[var(--card--bg)] w-full h-full group">
+    <BentoMediaSurface className="group select-none">
       <img
         className="pointer-events-none h-full w-full select-none object-fill dark:opacity-0 opacity-100 transition-opacity"
         src={HOME_ASSETS.weeklyBackground}
@@ -18,14 +20,12 @@ const Weekly: React.FC = () => {
         alt=""
       />
 
-      <Link
-        className="detail-arrow absolute left-[12px] bottom-[10px] z-10 flex justify-center items-center w-[36px] h-[36px] rounded-[18px] text-[var(--text-color)] bg-[var(--card--bg)] pointer-events-auto transition-all duration-200 hover:shadow-[0_0_0_5px_var(--card-border)]"
-        style={{ boxShadow: 'var(--card-border) 0px 0px 0px 2px' }}
-        href="/daily"
-      >
-        <ArrowUpRight className="w-4 h-4" />
-      </Link>
-    </div>
+      <BentoCornerAction position="bottom-left">
+        <BentoActionButton href="/daily" aria-label="打开日常页面">
+          <ArrowUpRight className="w-4 h-4" />
+        </BentoActionButton>
+      </BentoCornerAction>
+    </BentoMediaSurface>
   )
 }
 

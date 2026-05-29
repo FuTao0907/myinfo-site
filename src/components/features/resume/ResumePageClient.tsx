@@ -5,6 +5,12 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Briefcase, Home, Link2, Mail, Phone, Search, X } from 'lucide-react'
 
+import EmptyState from '@/components/ui/empty-state'
+import IconActionButton from '@/components/ui/icon-action-button'
+import MetaList, { type MetaListItem } from '@/components/ui/meta-list'
+import SectionBlock from '@/components/ui/section-block'
+import SurfaceCard from '@/components/ui/surface-card'
+import TagChip from '@/components/ui/tag-chip'
 import { HOME_ASSETS, RESUME_ASSETS, RESUME_PROFILE_CONFIG } from '@/lib/constants/content/index'
 import { lockBodyScroll, unlockBodyScroll } from '@/lib/helpers/body-scroll-lock'
 import { openExternalLink } from '@/lib/helpers/external-link'
@@ -118,6 +124,36 @@ export default function ResumePageClient({
   const resumePortraitFallbackLabel = getResumePortraitFallbackLabel(resumeName)
   const mailtoLink = buildResumeMailtoLink(siteProfile.email)
   const readableEmail = getReadableEmail(siteProfile.email)
+  const resumeMetaItems = useMemo<MetaListItem[]>(
+    () => [
+      {
+        id: 'status',
+        label: '当前状态',
+        value: RESUME_PROFILE_CONFIG.status,
+        icon: <Briefcase className="h-3.5 w-3.5" />,
+      },
+      {
+        id: 'phone',
+        label: '联系电话',
+        value: RESUME_PROFILE_CONFIG.phone,
+        icon: <Phone className="h-3.5 w-3.5" />,
+      },
+      {
+        id: 'email',
+        label: '邮箱地址',
+        value: readableEmail,
+        icon: <Mail className="h-3.5 w-3.5" />,
+      },
+      {
+        id: 'website',
+        label: '个人网站',
+        value: RESUME_PROFILE_CONFIG.websiteUrl,
+        icon: <Link2 className="h-3.5 w-3.5" />,
+        truncate: true,
+      },
+    ],
+    [readableEmail]
+  )
 
   /**
    * 关闭命令面板并重置内部状态。
@@ -284,7 +320,7 @@ export default function ResumePageClient({
       <div className="pointer-events-none absolute inset-0 print:hidden bg-[radial-gradient(circle_at_top_right,color-mix(in_srgb,var(--accent-soft)_16%,transparent),transparent_32%),radial-gradient(circle_at_bottom_left,color-mix(in_srgb,var(--accent-soft-2)_16%,transparent),transparent_36%)]" />
 
       <div className="relative mx-auto flex min-h-screen w-full max-w-3xl flex-col px-4 pb-24 pt-6 print:min-h-0 print:max-w-none print:px-6 print:pb-6 print:pt-6 md:px-6 md:pb-28 md:pt-12">
-        <section className="mx-auto w-full space-y-7 rounded-[24px] border border-[color-mix(in_srgb,var(--ui-main-border)_78%,transparent)] bg-[color-mix(in_srgb,var(--ui-main-bg)_95%,transparent)] p-5 shadow-[0_18px_48px_rgba(15,23,42,0.08)] backdrop-blur-sm print:space-y-4 print:rounded-none print:border-none print:bg-transparent print:p-0 print:shadow-none md:p-7">
+        <SurfaceCard className="mx-auto w-full space-y-7 p-5 print:space-y-4 print:rounded-none print:border-none print:bg-transparent print:p-0 print:shadow-none md:p-7">
           <div className="flex flex-col justify-between gap-5 print:grid print:grid-cols-[minmax(0,1fr)_68px] print:items-start print:gap-4 md:flex-row md:items-start">
             <div className="min-w-0 flex-1 space-y-1.5 print:space-y-1">
               <p className="text-xs uppercase tracking-[0.28em] text-[var(--text-color)]/42">
@@ -300,44 +336,26 @@ export default function ResumePageClient({
                 {RESUME_PROFILE_CONFIG.locationLabel}
               </p>
 
-              <div className="space-y-1.5 pt-2 text-xs font-mono text-[var(--text-color)]/58 print:space-y-1 print:pt-1 print:text-[11px] print:text-black/70 md:text-sm">
-                <div className="flex items-center gap-2">
-                  <Briefcase className="h-3.5 w-3.5 shrink-0" />
-                  <span>{RESUME_PROFILE_CONFIG.status}</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Phone className="h-3.5 w-3.5 shrink-0" />
-                  <span>{RESUME_PROFILE_CONFIG.phone}</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Mail className="h-3.5 w-3.5 shrink-0" />
-                  <span>{readableEmail}</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Link2 className="h-3.5 w-3.5 shrink-0" />
-                  <span className="truncate">{RESUME_PROFILE_CONFIG.websiteUrl}</span>
-                </div>
-              </div>
+              <MetaList
+                items={resumeMetaItems}
+                className="pt-2 text-xs font-mono text-[var(--text-color)]/58 print:space-y-1 print:pt-1 print:text-[11px] print:text-black/70 md:text-sm"
+                itemClassName="items-center"
+                textClassName="min-w-0"
+              />
 
               <div className="flex flex-wrap gap-2 pt-2 print:hidden">
-                <button
-                  type="button"
+                <IconActionButton
                   onClick={() => mailtoLink && openExternalLink(mailtoLink)}
-                  aria-label="发送邮件"
-                  title="发送邮件"
-                  className="inline-flex h-8 w-8 items-center justify-center rounded-md border border-[color-mix(in_srgb,var(--ui-main-border)_76%,transparent)] bg-[var(--ui-second-bg)] text-sm transition-colors hover:bg-[color-mix(in_srgb,var(--ui-second-bg)_72%,var(--text-color)_8%)]"
-                >
-                  <Mail className="h-4 w-4" />
-                </button>
-                <button
-                  type="button"
+                  label="发送邮件"
+                  icon={<Mail className="h-4 w-4" />}
+                  className="h-8 w-8 rounded-md border-[color-mix(in_srgb,var(--ui-main-border)_76%,transparent)] text-sm hover:bg-[color-mix(in_srgb,var(--ui-second-bg)_72%,var(--text-color)_8%)]"
+                />
+                <IconActionButton
                   onClick={() => router.push('/')}
-                  aria-label="返回首页"
-                  title="返回首页"
-                  className="inline-flex h-8 w-8 items-center justify-center rounded-md border border-[color-mix(in_srgb,var(--ui-main-border)_76%,transparent)] bg-[var(--ui-second-bg)] text-sm transition-colors hover:bg-[color-mix(in_srgb,var(--ui-second-bg)_72%,var(--text-color)_8%)]"
-                >
-                  <Home className="h-4 w-4" />
-                </button>
+                  label="返回首页"
+                  icon={<Home className="h-4 w-4" />}
+                  className="h-8 w-8 rounded-md border-[color-mix(in_srgb,var(--ui-main-border)_76%,transparent)] text-sm hover:bg-[color-mix(in_srgb,var(--ui-second-bg)_72%,var(--text-color)_8%)]"
+                />
               </div>
             </div>
 
@@ -359,20 +377,19 @@ export default function ResumePageClient({
             </div>
           </div>
 
-          <section className="flex min-h-0 flex-col gap-y-2.5 border-t border-[color-mix(in_srgb,var(--ui-main-border)_52%,transparent)] pt-6 print:gap-y-2 print:border-black/10 print:pt-4 first:border-none first:pt-0">
-            <h2 className="text-xl font-semibold tracking-tight">个人简介</h2>
+          <SectionBlock title="个人简介">
             <p className="max-w-3xl text-sm font-mono leading-7 text-[var(--text-color)]/70 print:max-w-none print:text-[11px] print:leading-6 print:text-black/75">
               {resumeSummary}
             </p>
-          </section>
+          </SectionBlock>
 
-          <section className="flex min-h-0 flex-col gap-y-2.5 border-t border-[color-mix(in_srgb,var(--ui-main-border)_52%,transparent)] pt-6 print:gap-y-2 print:border-black/10 print:pt-4">
-            <h2 className="text-xl font-semibold tracking-tight">工作经历</h2>
+          <SectionBlock title="工作经历">
             <div className="flex flex-col gap-4 print:gap-3">
               {experiences.map((experience) => (
-                <article
+                <SurfaceCard
                   key={`${experience.organization}-${experience.title}`}
-                  className="rounded-[18px] border border-[color-mix(in_srgb,var(--ui-main-border)_68%,transparent)] bg-[color-mix(in_srgb,var(--ui-main-bg)_88%,transparent)] px-4 py-4 print:[break-inside:avoid] print:rounded-none print:border-none print:bg-transparent print:px-0 print:py-0"
+                  subtle
+                  className="px-4 py-4 print:[break-inside:avoid] print:rounded-none print:border-none print:bg-transparent print:px-0 print:py-0"
                 >
                   <div className="flex flex-col gap-2 print:flex-row print:items-start print:justify-between md:flex-row md:items-start md:justify-between">
                     <div className="min-w-0">
@@ -381,9 +398,9 @@ export default function ResumePageClient({
                           {experience.organization}
                         </h3>
                         {experience.badge ? (
-                          <span className="rounded-md bg-[var(--ui-second-bg)] px-2 py-0.5 text-[11px] font-mono text-[var(--text-color)]/60 print:border print:border-black/10 print:bg-transparent print:px-1.5 print:py-0 print:text-[10px] print:text-black/60">
+                          <TagChip className="rounded-md bg-[var(--ui-second-bg)] px-2 py-0.5 font-mono text-[11px] text-[var(--text-color)]/60 print:rounded-sm print:border-black/10 print:bg-transparent print:px-1.5 print:py-0 print:text-[10px] print:text-black/60">
                             {experience.badge}
-                          </span>
+                          </TagChip>
                         ) : null}
                       </div>
                       <p className="mt-1 text-sm font-mono text-[var(--text-color)]/68 print:text-[11px] print:text-black/70">
@@ -403,32 +420,31 @@ export default function ResumePageClient({
                       <li key={highlight}>{highlight}</li>
                     ))}
                   </ol>
-                </article>
+                </SurfaceCard>
               ))}
             </div>
-          </section>
+          </SectionBlock>
 
-          <section className="flex min-h-0 flex-col gap-y-2.5 border-t border-[color-mix(in_srgb,var(--ui-main-border)_52%,transparent)] pt-6 print:gap-y-2 print:border-black/10 print:pt-4">
-            <h2 className="text-xl font-semibold tracking-tight">专业技能</h2>
+          <SectionBlock title="专业技能">
             <div className="flex flex-wrap gap-2 print:gap-1.5">
               {skillGroups.flat().map((skill) => (
-                <span
+                <TagChip
                   key={skill}
-                  className="inline-flex items-center rounded-md border border-[var(--ui-main-border)] bg-[color-mix(in_srgb,var(--accent-soft)_30%,var(--ui-main-bg)_70%)] px-2.5 py-1 text-xs font-mono text-[var(--text-color)]/78 print:rounded-sm print:border-black/10 print:bg-transparent print:px-1.5 print:py-0.5 print:text-[10px] print:text-black/70"
+                  className="rounded-md border-[var(--ui-main-border)] bg-[color-mix(in_srgb,var(--accent-soft)_30%,var(--ui-main-bg)_70%)] font-mono text-[var(--text-color)]/78 print:rounded-sm print:border-black/10 print:bg-transparent print:px-1.5 print:py-0.5 print:text-[10px] print:text-black/70"
                 >
                   {skill}
-                </span>
+                </TagChip>
               ))}
             </div>
-          </section>
+          </SectionBlock>
 
-          <section className="flex min-h-0 flex-col gap-y-2.5 border-t border-[color-mix(in_srgb,var(--ui-main-border)_52%,transparent)] pt-6 print:gap-y-2 print:border-black/10 print:pt-4">
-            <h2 className="text-xl font-semibold tracking-tight">项目经历</h2>
+          <SectionBlock title="项目经历">
             <div className="flex flex-col gap-4 print:gap-2">
               {projects.map((project) => (
-                <article
+                <SurfaceCard
                   key={`${project.name}-${project.duration}`}
-                  className="flex h-full flex-col rounded-[18px] border border-[color-mix(in_srgb,var(--ui-main-border)_68%,transparent)] bg-[color-mix(in_srgb,var(--ui-main-bg)_88%,transparent)] p-3.5 print:block print:rounded-none print:border-none print:bg-transparent print:p-0"
+                  subtle
+                  className="flex h-full flex-col p-3.5 print:block print:rounded-none print:border-none print:bg-transparent print:p-0"
                 >
                   <div className="space-y-1">
                     {project.route ? (
@@ -459,18 +475,18 @@ export default function ResumePageClient({
                       ))}
                     </ol>
                   ) : null}
-                </article>
+                </SurfaceCard>
               ))}
             </div>
-          </section>
+          </SectionBlock>
 
-          <section className="flex min-h-0 flex-col gap-y-2.5 border-t border-[color-mix(in_srgb,var(--ui-main-border)_52%,transparent)] pt-6 print:gap-y-2 print:border-black/10 print:pt-4">
-            <h2 className="text-xl font-semibold tracking-tight">教育经历</h2>
+          <SectionBlock title="教育经历">
             <div className="flex flex-col gap-3 print:gap-2">
               {educations.map((education) => (
-                <article
+                <SurfaceCard
                   key={`${education.school}-${education.duration}`}
-                  className="rounded-[16px] border border-[color-mix(in_srgb,var(--ui-main-border)_68%,transparent)] bg-[color-mix(in_srgb,var(--ui-main-bg)_88%,transparent)] px-4 py-3 print:[break-inside:avoid] print:rounded-none print:border-none print:bg-transparent print:px-0 print:py-0"
+                  subtle
+                  className="rounded-[16px] px-4 py-3 print:[break-inside:avoid] print:rounded-none print:border-none print:bg-transparent print:px-0 print:py-0"
                 >
                   <div className="flex flex-col gap-2 print:flex-row print:items-start print:justify-between md:flex-row md:items-start md:justify-between">
                     <div className="min-w-0">
@@ -485,18 +501,21 @@ export default function ResumePageClient({
                       {education.duration}
                     </div>
                   </div>
-                </article>
+                </SurfaceCard>
               ))}
             </div>
-          </section>
+          </SectionBlock>
 
-          <section className="flex min-h-0 flex-col gap-y-2.5 border-t border-[color-mix(in_srgb,var(--ui-main-border)_52%,transparent)] pt-6 print:gap-y-2 print:border-black/10 print:pt-4">
-            <h2 className="text-xl font-semibold tracking-tight">个人项目</h2>
+          <SectionBlock
+            title="个人项目"
+            description="与站内项目数据同源，后续新增项目后会自动同步到这里。"
+          >
             <div className="grid grid-cols-1 gap-4 print:gap-2 print:grid-cols-1 md:grid-cols-3">
               {personalProjects.map((project) => (
-                <article
+                <SurfaceCard
                   key={`${project.name}-${project.route ?? project.summary}`}
-                  className="flex h-full flex-col rounded-[18px] border border-[color-mix(in_srgb,var(--ui-main-border)_68%,transparent)] bg-[color-mix(in_srgb,var(--ui-main-bg)_88%,transparent)] p-3.5 print:block print:rounded-none print:border-none print:bg-transparent print:p-0"
+                  subtle
+                  className="flex h-full flex-col p-3.5 print:block print:rounded-none print:border-none print:bg-transparent print:p-0"
                 >
                   <div className="space-y-1">
                     {project.route ? (
@@ -519,11 +538,11 @@ export default function ResumePageClient({
                       {project.summary}
                     </p>
                   </div>
-                </article>
+                </SurfaceCard>
               ))}
             </div>
-          </section>
-        </section>
+          </SectionBlock>
+        </SurfaceCard>
       </div>
 
       <div className="pointer-events-none fixed inset-x-0 bottom-4 z-20 flex justify-center px-4 print:hidden">
@@ -607,9 +626,13 @@ export default function ResumePageClient({
                   )
                 })
               ) : (
-                <div className="rounded-2xl px-4 py-8 text-center text-sm text-[var(--text-color)]/52">
-                  没有匹配的命令
-                </div>
+                <EmptyState
+                  compact
+                  icon={<Search className="h-4 w-4" />}
+                  title="没有匹配的命令"
+                  description="尝试搜索“打印”、“首页”或“邮箱”等关键词。"
+                  className="border-none bg-transparent px-4 py-8 shadow-none"
+                />
               )}
             </div>
           </div>

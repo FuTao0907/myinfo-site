@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from 'react';
+import BentoCenterStage from '../wrapper/BentoCenterStage';
 import { ShadowCard } from '../wrapper/ShadowCard';
 
 const Dark: React.FC = () => {
@@ -30,12 +31,12 @@ const Dark: React.FC = () => {
 
   return (
     <ShadowCard className="!p-[5px]">
-      <div className="grid h-full w-full place-items-center">
+      <BentoCenterStage>
         <label className="switch">
           <input type="checkbox" checked={!isDark} onChange={toggleDark} />
           <span className="slider" />
         </label>
-      </div>
+      </BentoCenterStage>
     </ShadowCard>
   );
 };

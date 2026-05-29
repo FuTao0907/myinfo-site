@@ -38,7 +38,7 @@ function buildPersonalResumeProjects(
       duration: '站内项目',
       summary: project.description,
       highlights: [],
-      route: `/project?slug=${encodeURIComponent(project.slug)}`,
+      route: `/`,
     }))
 }
 

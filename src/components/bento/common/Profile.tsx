@@ -7,6 +7,11 @@ import { useSiteConfig } from '@/components/providers/SiteConfigProvider'
 import { useToast } from '@/components/providers/ToastProvider'
 import { HOME_ASSETS } from '@/lib/constants/content/index'
 import { openExternalLink } from '@/lib/helpers/external-link'
+import BentoActionButton from '../wrapper/BentoActionButton'
+import BentoActionGroup from '../wrapper/BentoActionGroup'
+import BentoAvatarShowcase from '../wrapper/BentoAvatarShowcase'
+import BentoContentStack from '../wrapper/BentoContentStack'
+import BentoToggleButton from '../wrapper/BentoToggleButton'
 import { ShadowCard } from '../wrapper/ShadowCard'
 import Typed from 'typed.js'
 
@@ -39,6 +44,9 @@ const Profile: React.FC = () => {
     }
   }, [siteProfile.profileContent])
 
+  /**
+   * 切换首页头像展示状态，并重置打字机内容以匹配当前展示。
+   */
   const handleSwitch = () => {
     setIsExpandingAvatar(true)
     setTimeout(() => {
@@ -118,56 +126,42 @@ const Profile: React.FC = () => {
 
   return (
     <ShadowCard className="justify-between !p-[5px]">
-      <div className="pointer-events-none relative min-h-[calc(100%_-_50px)] p-6">
-        <div className="relative mb-[30px] h-[96px] w-[96px]">
-          <div
-            className={`avatar-img absolute left-0 top-0 z-20 mb-8 h-[96px] w-[96px] rounded-full dark:bg-[var(--header-avatar-bg)] flex items-center justify-center ${isExpandingAvatar ? 'expanding-avatar-circle' : ''}`}
-          >
-            {currentAvatar === 'Arvin' ? (
-              <img
-                className="h-full w-full object-cover rounded-full"
-                src={siteProfile.avatarUrl || siteProfile.iconUrl || HOME_ASSETS.profileAvatar}
-                alt="logo"
-                onError={(e) => {
-                  ;(e.target as HTMLImageElement).src = HOME_ASSETS.profileAvatarFallbackEmoji
-                }}
-              />
-            ) : (
-              <img
-                className="h-full w-full object-cover rounded-full"
-                src={siteProfile.avatarUrl || siteProfile.iconUrl || HOME_ASSETS.profileAvatar}
-                alt="logo"
-              />
-            )}
-          </div>
-          <div className={`avatar-bg ${isExpandingBg ? 'expanding-bg-circle' : ''}`} />
-        </div>
+      <BentoContentStack className="pointer-events-none relative min-h-[calc(100%_-_50px)] items-start justify-start p-6">
+        <BentoAvatarShowcase
+          src={siteProfile.avatarUrl || siteProfile.iconUrl || HOME_ASSETS.profileAvatar}
+          alt="logo"
+          isExpandingAvatar={isExpandingAvatar}
+          isExpandingBg={isExpandingBg}
+          onError={(event) => {
+            event.currentTarget.src = HOME_ASSETS.profileAvatarFallbackEmoji
+          }}
+        />
 
         <span ref={typedSpanRef} className="text-[20px] font-[cursive]" />
 
-        <button className="switch-btn pointer-events-auto" onClick={handleSwitch}>
-          <div
-            className={`icon ${currentAvatar === 'Arvin' ? 'icon_rotate_one' : 'icon_rotate_two'}`}
-          >
-            <RefreshCw className="h-4 w-4" strokeWidth={1.8} />
-          </div>
-          <p className="text">Toggle</p>
-        </button>
-      </div>
+        <BentoToggleButton
+          aria-label="切换头像展示"
+          title="切换头像展示"
+          label="Toggle"
+          icon={<RefreshCw className="h-4 w-4" strokeWidth={1.8} />}
+          iconClassName={currentAvatar === 'Arvin' ? 'icon_rotate_one' : 'icon_rotate_two'}
+          onClick={handleSwitch}
+        />
+      </BentoContentStack>
 
-      <div className="flex flex-row justify-end gap-4 px-6 mb-4">
-        <button
-          type="button"
+      <BentoActionGroup>
+        <BentoActionButton
           title="简历"
-          className="detail-arrow text-[#1F80FF]"
+          aria-label="打开简历"
+          className="text-[#1F80FF]"
           onClick={handleCvClick}
         >
           <FileText className="h-4 w-4" strokeWidth={1.8} />
-        </button>
-        <button
-          type="button"
+        </BentoActionButton>
+        <BentoActionButton
           title="掘金主页"
-          className="detail-arrow text-[#1F80FF]"
+          aria-label="打开掘金主页"
+          className="text-[#1F80FF]"
           onClick={() => handleProfileLinkClick(siteProfile.juejinUrl, '掘金链接暂未配置')}
         >
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24">
@@ -176,26 +170,24 @@ const Profile: React.FC = () => {
               d="m12 14.316l7.454-5.88l-2.022-1.625L12 11.1l-.004.003l-5.432-4.288l-2.02 1.624l7.452 5.88Zm0-7.247l2.89-2.298L12 2.453l-.004-.005l-2.884 2.318l2.884 2.3Zm0 11.266l-.005.002l-9.975-7.87L0 12.088l.194.156l11.803 9.308l7.463-5.885L24 12.085l-2.023-1.624Z"
             />
           </svg>
-        </button>
-        <button
-          type="button"
+        </BentoActionButton>
+        <BentoActionButton
           title="GitHub"
-          className="detail-arrow"
+          aria-label="打开 GitHub"
           onClick={() => handleProfileLinkClick(siteProfile.githubHome, 'GitHub 链接暂未配置')}
         >
           <Github className="h-4 w-4" strokeWidth={1.8} />
-        </button>
-        <button
-          type="button"
+        </BentoActionButton>
+        <BentoActionButton
           title="Email"
-          className="detail-arrow"
+          aria-label="发送邮件"
           onClick={() =>
             handleProfileLinkClick(buildMailtoLink(siteProfile.email), '邮箱链接暂未配置')
           }
         >
           <Mail className="h-4 w-4" strokeWidth={1.8} />
-        </button>
-      </div>
+        </BentoActionButton>
+      </BentoActionGroup>
     </ShadowCard>
   )
 }

@@ -630,40 +630,6 @@ input:checked + .slider:before {
   outline: transparent;
 }
 
-.switch-btn {
-  box-shadow: var(--card-border) 0px 0px 0px 2px;
-  position: absolute;
-  height: 36px;
-  padding: 0px 12px;
-  top: 20px;
-  right: 20px;
-  border: none;
-  border-radius: 18px;
-  background: transparent;
-  display: flex;
-  align-items: center;
-  transition: all 0.2s ease-out 0s;
-  will-change: box-shadow, transform;
-  gap: 10px;
-}
-.switch-btn:hover {
-  cursor: pointer;
-  box-shadow: var(--card-border) 0px 0px 0px 5px;
-}
-.switch-btn .icon {
-  color: var(--text-color);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.switch-btn .text {
-  font-size: 14px;
-  line-height: 24px;
-  letter-spacing: 0.25px;
-  font-weight: 400;
-  color: var(--text-color);
-  margin-left: 6px;
-}
 .avatar-img {
   border-radius: 50%;
   box-shadow: var(--header-avatar-shadow), var(--header-avatar-shadow-1);

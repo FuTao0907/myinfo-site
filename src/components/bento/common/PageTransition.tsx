@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
+import BentoContentStack from '../wrapper/BentoContentStack';
 import { ShadowCard } from '../wrapper/ShadowCard';
 
 const PageTransition: React.FC = () => {
@@ -22,7 +23,7 @@ const PageTransition: React.FC = () => {
 
   return (
     <ShadowCard className="!p-[5px]">
-      <div className="h-full w-full flex flex-col items-center justify-center gap-[16px]">
+      <BentoContentStack className="gap-4">
         <div className="mx-[10px] w-full px-2">
           <span className="block text-[14px] font-bold">
             页面过渡动画：<span className="capitalize">{transitionName.slice(0, 4)}</span>
@@ -65,7 +66,7 @@ const PageTransition: React.FC = () => {
             </label>
           </form>
         </div>
-      </div>
+      </BentoContentStack>
     </ShadowCard>
   );
 };

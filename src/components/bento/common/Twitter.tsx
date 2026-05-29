@@ -4,6 +4,7 @@ import React from 'react'
 import { useSiteConfig } from '@/components/providers/SiteConfigProvider'
 import { useToast } from '@/components/providers/ToastProvider'
 import { openExternalLink } from '@/lib/helpers/external-link'
+import BentoCenterStage from '../wrapper/BentoCenterStage'
 
 const Twitter: React.FC = () => {
   const { siteProfile } = useSiteConfig()
@@ -19,10 +20,7 @@ const Twitter: React.FC = () => {
   }
 
   return (
-    <div
-      className="relative flex flex-col place-items-center items-center justify-center w-full h-full !bg-transparent"
-      style={{ boxShadow: 'unset' }}
-    >
+    <BentoCenterStage className="!bg-transparent" style={{ boxShadow: 'unset' }}>
       <svg
         className="pointer-events-none absolute left-0 top-0 h-full w-full text-[#98CFFF] dark:text-[var(--card--bg)]"
         viewBox="0 0 200 200"
@@ -51,7 +49,7 @@ const Twitter: React.FC = () => {
           />
         </svg>
       </div>
-    </div>
+    </BentoCenterStage>
   )
 }
 

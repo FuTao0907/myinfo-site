@@ -113,7 +113,7 @@ export default function ProjectsClient({ projects }: ProjectsClientProps) {
               <div className="pointer-events-auto absolute bottom-0 left-0 z-[10] flex w-full items-center justify-between p-[10px] text-[16px] leading-7 text-[var(--project-card-text)]">
                 <button
                   type="button"
-                className="inline-flex gap-[0.5] pr-[0.5] text-[0.95em] leading-none hover:underline"
+                  className="inline-flex gap-[0.5] pr-[0.5] text-[0.95em] leading-none hover:underline"
                   onClick={(event) => {
                     event.stopPropagation()
                     handleProjectLinkClick(project.demoUrl, '项目演示地址暂未配置')

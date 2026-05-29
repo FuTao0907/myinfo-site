@@ -7,6 +7,13 @@ import { ArrowUpRight, X } from 'lucide-react'
 import { useSiteConfig } from '@/components/providers/SiteConfigProvider'
 import { AMAP_SETTINGS } from '@/lib/constants/content/index'
 import { lockBodyScroll, unlockBodyScroll } from '@/lib/helpers/body-scroll-lock'
+import BentoActionButton from '../wrapper/BentoActionButton'
+import BentoBadge from '../wrapper/BentoBadge'
+import BentoCardHeader from '../wrapper/BentoCardHeader'
+import BentoCornerAction from '../wrapper/BentoCornerAction'
+import BentoIconCircleButton from '../wrapper/BentoIconCircleButton'
+import BentoMediaSurface from '../wrapper/BentoMediaSurface'
+import BentoOverlayPanel from '../wrapper/BentoOverlayPanel'
 
 interface ResolvedLocation {
   longitude: number
@@ -75,13 +82,6 @@ interface AMapPreviewModalProps {
   isOpen: boolean
   location: ResolvedLocation
   onClose: () => void
-}
-
-/**
- * 在地图先收到交互后，阻止事件继续冒泡到外层拖拽布局。
- */
-function stopDragPropagation(event: React.SyntheticEvent) {
-  event.stopPropagation()
 }
 
 /**
@@ -324,46 +324,31 @@ function AMapPreviewModal({ isOpen, location, onClose }: AMapPreviewModalProps) 
   }
 
   return createPortal(
-    <div
-      className="fixed inset-0 z-[120] flex items-center justify-center bg-black/55 p-4 backdrop-blur-[2px]"
-      onClick={onClose}
-      onMouseDown={stopDragPropagation}
-      onPointerDown={stopDragPropagation}
-      onTouchStart={stopDragPropagation}
+    <BentoOverlayPanel
+      isOpen={isOpen}
+      onClose={onClose}
+      panelClassName="rounded-[16px] border-[5px] p-[10px]"
     >
-      <div
-        className="relative w-full max-w-[860px] overflow-hidden rounded-[16px] border-[5px] border-[var(--card-border)] bg-[var(--ui-main-bg)] p-[10px] text-[var(--ui-main-text)] shadow-2xl"
-        onClick={(event) => event.stopPropagation()}
-        onMouseDown={stopDragPropagation}
-        onPointerDown={stopDragPropagation}
-        onTouchStart={stopDragPropagation}
-      >
-        <div className="mb-3 flex items-center justify-between px-1">
-          <div>
-            <p className="text-sm text-[var(--text-color)]/70">地图预览</p>
-            <h2 className="text-lg font-bold text-[var(--ui-main-text)]">{location.label}</h2>
-          </div>
-          <button
-            type="button"
-            aria-label="关闭地图预览"
-            className="flex h-10 w-10 items-center justify-center rounded-full bg-[var(--card--bg)] text-[var(--text-color)] transition-opacity hover:opacity-80"
-            onClick={onClose}
-          >
+      <BentoCardHeader
+        eyebrow="地图预览"
+        title={location.label}
+        action={
+          <BentoIconCircleButton aria-label="关闭地图预览" title="关闭地图预览" onClick={onClose}>
             <X className="h-5 w-5" />
-          </button>
-        </div>
+          </BentoIconCircleButton>
+        }
+      />
 
-        <div className="h-[calc(60vh_-_60px)] min-h-[320px] w-full overflow-hidden rounded-[12px] bg-[var(--card--bg)]">
-          <AMapCanvas
-            className="h-full w-full"
-            interactive={true}
-            iconUrl={siteProfile.iconUrl}
-            location={location}
-            zoom={10}
-          />
-        </div>
+      <div className="h-[calc(60vh_-_60px)] min-h-[320px] w-full overflow-hidden rounded-[12px] bg-[var(--card--bg)]">
+        <AMapCanvas
+          className="h-full w-full"
+          interactive={true}
+          iconUrl={siteProfile.iconUrl}
+          location={location}
+          zoom={10}
+        />
       </div>
-    </div>,
+    </BentoOverlayPanel>,
     document.body
   )
 }
@@ -432,17 +417,17 @@ const AMapView: React.FC = () => {
 
   if (!AMAP_SETTINGS.key || !AMAP_SETTINGS.securityJsCode) {
     return (
-      <div className="relative h-full w-full overflow-hidden rounded-[12px] bg-[var(--card--bg)]">
+      <BentoMediaSurface className="rounded-[12px]">
         <div className="flex h-full w-full items-center justify-center px-6 text-center text-sm text-[var(--text-color)]">
           请在 `.env.local` 中配置 `NEXT_PUBLIC_AMAP_KEY` 和 `NEXT_PUBLIC_AMAP_SECURITY_JS_CODE`
         </div>
-      </div>
+      </BentoMediaSurface>
     )
   }
 
   return (
     <>
-      <div className="group relative h-full w-full overflow-hidden rounded-[12px]">
+      <BentoMediaSurface className="group rounded-[12px]">
         <AMapCanvas
           className="absolute inset-0 h-full w-full"
           interactive={false}
@@ -450,22 +435,23 @@ const AMapView: React.FC = () => {
           location={resolvedLocation}
           zoom={9}
         />
-        <div
-          className="absolute left-[12px] top-[12px] rounded-[16px] bg-[var(--ui-main-bg)] px-3 py-1 text-xs font-bold shadow-sm"
+        <BentoBadge
+          solid
+          className="absolute left-[12px] top-[12px] rounded-[16px] px-3 py-1"
           style={{ fontFamily: 'LXGW WenKai Screen R, sans-serif' }}
         >
           {resolvedLocation.label}
-        </div>
-        <button
-          type="button"
-          aria-label="打开地图预览"
-          className="detail-arrow absolute bottom-[10px] right-[12px] z-10 flex h-[36px] w-[36px] items-center justify-center rounded-[18px] bg-[var(--card--bg)] text-[var(--text-color)] transition-all duration-200 hover:shadow-[0_0_0_5px_var(--card-border)]"
-          style={{ boxShadow: 'var(--card-border) 0px 0px 0px 2px' }}
-          onClick={() => setIsPreviewOpen(true)}
-        >
-          <ArrowUpRight className="h-4 w-4" />
-        </button>
-      </div>
+        </BentoBadge>
+        <BentoCornerAction position="bottom-right">
+          <BentoActionButton
+            aria-label="打开地图预览"
+            title="打开地图预览"
+            onClick={() => setIsPreviewOpen(true)}
+          >
+            <ArrowUpRight className="h-4 w-4" />
+          </BentoActionButton>
+        </BentoCornerAction>
+      </BentoMediaSurface>
 
       <AMapPreviewModal
         isOpen={isPreviewOpen}
