@@ -21,6 +21,13 @@ interface PostClientProps {
 }
 
 /**
+ * 返回当前用于滚动监听的正文标题节点。
+ */
+function getTrackableHeadingElements(): HTMLElement[] {
+  return Array.from(document.querySelectorAll<HTMLElement>('.toc-always-on h1[id], .toc-always-on h2[id], .toc-always-on h3[id]'))
+}
+
+/**
  * 滚动目录面板，使当前高亮目录保持在可视区域中。
  */
 function scrollToTocItem(container: HTMLElement | null, targetId: string) {
@@ -49,7 +56,7 @@ function scrollToTocItem(container: HTMLElement | null, targetId: string) {
 }
 
 /**
- * 渲染文章详情、目录和回到顶部按钮。
+ * 渲染文章详情、知识目录和回到顶部按钮。
  */
 export default function PostClient({ post }: PostClientProps) {
   const [toc, setToc] = useState<TocItem[]>([])
@@ -75,10 +82,11 @@ export default function PostClient({ post }: PostClientProps) {
       }))
 
       setToc(headings)
+      setActiveId(headings[0]?.id ?? '')
     }, 100)
 
     return () => window.clearTimeout(timer)
-  }, [post.content])
+  }, [post.content, post.id])
 
   useEffect(() => {
     if (!window.location.hash) {
@@ -92,9 +100,7 @@ export default function PostClient({ post }: PostClientProps) {
         return
       }
 
-      const headings = document.querySelectorAll(
-        '.toc-always-on h1[id], .toc-always-on h2[id], .toc-always-on h3[id]'
-      )
+      const headings = getTrackableHeadingElements()
       let currentActiveId = ''
 
       headings.forEach((heading) => {
@@ -126,7 +132,7 @@ export default function PostClient({ post }: PostClientProps) {
     isMounted && toc.length > 0
       ? createPortal(
           <aside className="post-page-toc" aria-label="文章目录">
-            <h4 className="mb-4 text-lg font-bold">目录</h4>
+            <h4 className="mb-4 text-lg font-bold">文章目录</h4>
             <nav ref={tocNavRef} className="post-page-toc-nav scrollbar-hide">
               <ul className="m-0 list-none space-y-1 border-l-2 border-[var(--card-border)] border-solid p-0">
                 {toc.map((item) => (
@@ -188,7 +194,7 @@ export default function PostClient({ post }: PostClientProps) {
           position: relative;
           z-index: 1;
           width: 100%;
-          max-width: 760px;
+          max-width: 920px;
           margin: 0 auto;
           border-radius: 10px;
           background: var(--blog-card-bg);
@@ -217,6 +223,18 @@ export default function PostClient({ post }: PostClientProps) {
         .post-page-back-to-top:hover {
           transform: scale(1.1);
         }
+        .post-page-content-card .prose img,
+        .post-page-content-card .prose p > img {
+          display: block;
+          width: 100%;
+          max-width: min(100%, 720px);
+          margin-left: auto;
+          margin-right: auto;
+        }
+        .post-page-content-card .prose p > img {
+          margin-top: 2em;
+          margin-bottom: 2em;
+        }
         #blog-root::before {
           content: '';
           position: absolute;
@@ -242,7 +260,7 @@ export default function PostClient({ post }: PostClientProps) {
         @media (min-width: 768px) {
           .post-page-article {
             border: 1px solid var(--blog-card-border);
-            padding: 40px 36px;
+            padding: 32px 36px;
           }
           .post-page-back-to-top {
             right: 32px;
@@ -254,8 +272,8 @@ export default function PostClient({ post }: PostClientProps) {
             display: block;
             position: fixed;
             top: calc(var(--site-header-height) + 24px);
-            right: max(24px, calc((100vw - 1320px) / 2));
-            width: 240px;
+            right: max(24px, calc((100vw - 1540px) / 2));
+            width: 260px;
             z-index: 30;
             pointer-events: auto;
           }
@@ -270,17 +288,35 @@ export default function PostClient({ post }: PostClientProps) {
       `}</style>
       <div className="post-page-shell">
         <main id="blog-root" className="post-page-article">
-          <div className="prose m-auto mb-8 mt-6">
+          <div className="prose m-auto mb-8 mt-6 max-w-[72ch]">
             <h1 className="slide-enter-2 mb-0">{post.plainTitle}</h1>
             <p className="slide-enter-2 opacity-50">{post.date}</p>
             <p className="slide-enter-3 text-[80%]">{post.desc}</p>
           </div>
 
-          <article className="slide-enter-3 toc-always-on m-auto">
-            <MarkdownRenderer content={post.content} />
-          </article>
+          {post.tags.length > 0 ? (
+            <section className="slide-enter-3 mx-auto mb-8 max-w-[72ch] rounded-2xl border border-[var(--blog-card-border)] bg-[var(--card--bg)]/45 p-4 md:p-5">
+              <p className="text-sm font-semibold text-[var(--blog-card-text)]">文章标签</p>
+              <div className="mt-4 flex flex-wrap gap-2">
+                {post.tags.map((tag) => (
+                  <span
+                    key={tag}
+                    className="inline-flex min-h-8 items-center rounded-full border border-[var(--blog-card-border)] px-3 text-xs font-semibold text-[#7C7C82]"
+                  >
+                    #{tag}
+                  </span>
+                ))}
+              </div>
+            </section>
+          ) : null}
 
-          <div className="prose slide-enter-4 m-auto mt-8 animate-delay-500 print:hidden">
+          <div className="slide-enter-3 toc-always-on mx-auto max-w-[72ch]">
+            <article className="post-page-content-card rounded-2xl border border-[var(--blog-card-border)] bg-[var(--blog-card-bg)] p-4 md:p-5">
+              <MarkdownRenderer content={post.content} />
+            </article>
+          </div>
+
+          <div className="prose slide-enter-4 m-auto mt-8 max-w-[72ch] animate-delay-500 print:hidden">
             <div className="mb-[10px] flex flex-col items-center justify-between font-mono opacity-50 hover:opacity-75 md:flex-row">
               <div className="flex-1">发布日期: {post.date}</div>
               <div className="mt-4 flex-1 text-right md:mt-0">
@@ -297,7 +333,7 @@ export default function PostClient({ post }: PostClientProps) {
             </div>
           </div>
 
-          <div className="prose slide-enter-4 m-auto mb-8 animate-delay-500 print:hidden">
+          <div className="prose slide-enter-4 m-auto mb-8 max-w-[72ch] animate-delay-500 print:hidden">
             <br />
             <span className="font-mono opacity-50">{'> '}</span>
             <Link
