@@ -1,3 +1,4 @@
+import beianBadgeAsset from '@/assets/beian-badge.png'
 import resumePortraitAsset from '@/assets/avthor.jpg'
 
 /**
@@ -8,6 +9,8 @@ export const COMMON_ASSETS = {
   siteIcon: '/logo.png',
   // 顶部导航使用的 logo 资源。
   headerLogo: '/logo.svg',
+  // 公安备案图标资源。
+  beianBadge: beianBadgeAsset.src,
   // 文章缺少封面时的默认封面图。
   defaultPostCover:
     'https://images.unsplash.com/photo-1555066931-4365d14bab8c?q=80&w=2070&auto=format&fit=crop',
@@ -73,6 +76,20 @@ export const SITE_LINKS = {
     'https://hail-manatee-fc5.notion.site/a3d8b723782e48a3b3570980e83c70ae?v=0c510fa996e2492b943e7746c1bd9974',
   // 文章详情页底部跳转的 GitHub 主页链接。
   articleGithubHome: 'https://github.com/pinky-pig',
+} as const
+
+/**
+ * 站点备案信息配置。
+ */
+export const SITE_RECORDS = {
+  // ICP 备案展示文案。
+  icpRecordLabel: '京ICP备2025145292号-2',
+  // ICP 备案查询入口。
+  icpRecordUrl: 'https://beian.miit.gov.cn/',
+  // 公安备案展示文案。
+  policeRecordLabel: '冀公网安备13028102000298号',
+  // 公安备案跳转地址。
+  policeRecordUrl: 'https://beian.mps.gov.cn/#/query/webSearch?code=13028102000298',
 } as const
 
 /**

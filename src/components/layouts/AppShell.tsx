@@ -3,12 +3,14 @@
 import type { ReactNode } from 'react'
 
 import { useEffect, useRef, useState } from 'react'
+import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 
 import SiteHeader from '@/components/layouts/SiteHeader'
 import SearchDialog from '@/components/features/search/SearchDialog'
 import { SiteConfigProvider } from '@/components/providers/SiteConfigProvider'
 import { ToastProvider } from '@/components/providers/ToastProvider'
+import { COMMON_ASSETS, SITE_RECORDS } from '@/lib/constants/content/site'
 import type { SiteConfig } from '@/types/site-config'
 import type { SearchEntry } from '@/types/search'
 
@@ -140,6 +142,40 @@ export default function AppShell({ children, siteConfig, searchEntries }: AppShe
               {children}
             </div>
           </main>
+          {!isFullscreenRoute ? (
+            <footer className="relative z-10 border-t border-[var(--card-border)]/70 px-4 py-4 md:px-6">
+              <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-3 text-sm text-[var(--text-color)]/70 md:flex-row">
+                <p className="m-0">
+                  Copyright © {new Date().getFullYear()} {siteConfig.siteProfile.siteTitle}
+                </p>
+                <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 md:justify-end">
+                  <a
+                    href={SITE_RECORDS.icpRecordUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="inline-flex items-center text-[var(--text-color)]/75 underline-offset-4 transition-colors hover:text-[var(--text-color)] hover:underline"
+                  >
+                    <span>{SITE_RECORDS.icpRecordLabel}</span>
+                  </a>
+                  <a
+                    href={SITE_RECORDS.policeRecordUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="inline-flex items-center gap-2 text-[var(--text-color)]/75 underline-offset-4 transition-colors hover:text-[var(--text-color)] hover:underline"
+                  >
+                    <Image
+                      src={COMMON_ASSETS.beianBadge}
+                      alt="公安备案图标"
+                      width={20}
+                      height={20}
+                      className="h-5 w-5 rounded-sm"
+                    />
+                    <span>{SITE_RECORDS.policeRecordLabel}</span>
+                  </a>
+                </div>
+              </div>
+            </footer>
+          ) : null}
         </div>
       </ToastProvider>
     </SiteConfigProvider>
