@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it } from 'vitest'
 
-import { lockBodyScroll, unlockBodyScroll } from './body-scroll-lock'
+import { lockBodyScroll, unlockBodyScroll } from '@/lib/helpers/body-scroll-lock'
 
 interface MockBody {
   style: { overflow: string }

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import { getAllPosts, getPostById, getPostTags, getRegularPosts, getWeeklyPosts } from './posts'
+import { getAllPosts, getPostById, getPostTags, getRegularPosts, getWeeklyPosts } from '@/lib/helpers/posts'
 
 /**
  * 返回一篇可用于详情查询断言的真实文章。
