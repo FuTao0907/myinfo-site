@@ -2,9 +2,12 @@ import js from '@eslint/js'
 import globals from 'globals'
 import reactHooks from 'eslint-plugin-react-hooks'
 import tseslint from 'typescript-eslint'
+import { getToolingSharedConfig } from './config/tooling/shared.mjs'
+
+const toolingSharedConfig = getToolingSharedConfig()
 
 export default tseslint.config(
-  { ignores: ['.next', 'dist', 'coverage'] },
+  { ignores: toolingSharedConfig.ignoreDirs },
   {
     extends: [js.configs.recommended, ...tseslint.configs.recommended],
     files: ['**/*.{ts,tsx}'],

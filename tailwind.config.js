@@ -1,7 +1,12 @@
+import tailwindcssAnimate from 'tailwindcss-animate'
+import { getToolingSharedConfig } from './config/tooling/shared.mjs'
+
+const toolingSharedConfig = getToolingSharedConfig()
+
 /** @type {import('tailwindcss').Config} */
 export default {
   darkMode: ['class'],
-  content: ['./src/**/*.{ts,tsx}'],
+  content: toolingSharedConfig.tailwindContent,
   theme: {
     container: {
       center: true,
@@ -67,5 +72,5 @@ export default {
       },
     },
   },
-  plugins: [require('tailwindcss-animate')],
+  plugins: [tailwindcssAnimate],
 }
