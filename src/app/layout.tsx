@@ -1,9 +1,9 @@
 import type { Metadata } from 'next'
 import type { ReactNode } from 'react'
 
-import AppShell from '@/components/layouts/AppShell'
-import { getSiteConfig } from '@/lib/public-content'
-import { getSearchEntries } from '@/lib/search'
+import AppShell from '~shared/components/layouts/AppShell'
+import { getSearchEntries } from '~search/lib/entries'
+import { getSiteConfig } from '~site/lib/site-config'
 
 import '@/styles/globals.css'
 

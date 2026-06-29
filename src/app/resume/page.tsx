@@ -4,15 +4,16 @@ import ResumePageClient, {
   type ResumeEducation,
   type ResumeExperience,
   type ResumeProject,
-} from '@/components/features/resume/ResumePageClient'
+} from '~resume/components/ResumePageClient'
+import { getProjects } from '~project/lib/projects'
+import { getSiteConfig } from '~site/lib/site-config'
 import {
   RESUME_EDUCATIONS,
   RESUME_EXPERIENCES,
   RESUME_PROFILE_CONFIG,
   RESUME_PROJECTS,
   RESUME_SKILL_GROUPS,
-} from '@/lib/constants/content/index'
-import { getProjects, getSiteConfig } from '@/lib/public-content'
+} from '~shared/lib/constants/content'
 
 /**
  * 生成简历页元数据。

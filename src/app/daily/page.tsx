@@ -1,5 +1,5 @@
-import PostsClient from '@/components/features/blog/PostsClient'
-import { getPostsByType } from '@/lib/public-content'
+import PostsClient from '~blog/components/PostsClient'
+import { getDailyPosts } from '~blog/lib/posts'
 
 /**
  * 渲染日常文章列表页。
@@ -7,7 +7,7 @@ import { getPostsByType } from '@/lib/public-content'
 export default async function DailyPage() {
   return (
     <PostsClient
-      posts={await getPostsByType('daily')}
+      posts={await getDailyPosts()}
       title="Daily"
       countLabel="daily notes"
       routePrefix="/daily"

@@ -1,10 +1,12 @@
 import { afterEach, describe, expect, it } from 'vitest'
 
-import { getPublicEnv } from '@/env'
+import { getContentApiBaseUrl, getPublicEnv } from '@/env'
 
 const originalEnv = {
   NEXT_PUBLIC_AMAP_KEY: process.env.NEXT_PUBLIC_AMAP_KEY,
   NEXT_PUBLIC_AMAP_SECURITY_JS_CODE: process.env.NEXT_PUBLIC_AMAP_SECURITY_JS_CODE,
+  MYINFO_API_BASE_URL: process.env.MYINFO_API_BASE_URL,
+  NEXT_PUBLIC_API_BASE_URL: process.env.NEXT_PUBLIC_API_BASE_URL,
 }
 
 /**
@@ -21,6 +23,18 @@ function restorePublicEnv() {
     delete process.env.NEXT_PUBLIC_AMAP_SECURITY_JS_CODE
   } else {
     process.env.NEXT_PUBLIC_AMAP_SECURITY_JS_CODE = originalEnv.NEXT_PUBLIC_AMAP_SECURITY_JS_CODE
+  }
+
+  if (originalEnv.MYINFO_API_BASE_URL === undefined) {
+    delete process.env.MYINFO_API_BASE_URL
+  } else {
+    process.env.MYINFO_API_BASE_URL = originalEnv.MYINFO_API_BASE_URL
+  }
+
+  if (originalEnv.NEXT_PUBLIC_API_BASE_URL === undefined) {
+    delete process.env.NEXT_PUBLIC_API_BASE_URL
+  } else {
+    process.env.NEXT_PUBLIC_API_BASE_URL = originalEnv.NEXT_PUBLIC_API_BASE_URL
   }
 }
 
@@ -44,5 +58,18 @@ describe('env', () => {
       amapKey: 'demo-key',
       amapSecurityJsCode: 'demo-code',
     })
+  })
+
+  it('优先返回服务端内容接口地址，其次回退到公开地址和默认本地地址', () => {
+    delete process.env.MYINFO_API_BASE_URL
+    delete process.env.NEXT_PUBLIC_API_BASE_URL
+
+    expect(getContentApiBaseUrl()).toBe('http://localhost:3001/api')
+
+    process.env.NEXT_PUBLIC_API_BASE_URL = 'https://public.example.com/api'
+    expect(getContentApiBaseUrl()).toBe('https://public.example.com/api')
+
+    process.env.MYINFO_API_BASE_URL = 'https://server.example.com/api'
+    expect(getContentApiBaseUrl()).toBe('https://server.example.com/api')
   })
 })

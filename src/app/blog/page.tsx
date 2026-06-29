@@ -1,16 +1,11 @@
-import PostsClient from '@/components/features/blog/PostsClient'
-import { getPostsByType } from '@/lib/public-content'
+import PostsClient from '~blog/components/PostsClient'
+import { getBlogPosts } from '~blog/lib/posts'
 
 /**
  * 渲染技术文章列表页。
  */
 export default async function BlogPage() {
   return (
-    <PostsClient
-      posts={await getPostsByType('blog')}
-      title="Blog"
-      countLabel="posts"
-      routePrefix="/blog"
-    />
+    <PostsClient posts={await getBlogPosts()} title="Blog" countLabel="posts" routePrefix="/blog" />
   )
 }

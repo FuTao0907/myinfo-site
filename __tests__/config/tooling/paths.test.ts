@@ -20,6 +20,16 @@ describe('tooling paths', () => {
 
     expect(aliases).toEqual({
       '@': path.join('E:/study/Myinfo/myinfo-site', 'src'),
+      '~': path.join('E:/study/Myinfo/myinfo-site', 'src'),
+      '~app': path.join('E:/study/Myinfo/myinfo-site', 'src', 'app'),
+      '~shared': path.join('E:/study/Myinfo/myinfo-site', 'src', 'shared'),
+      '~domains': path.join('E:/study/Myinfo/myinfo-site', 'src', 'domains'),
+      '~blog': path.join('E:/study/Myinfo/myinfo-site', 'src', 'domains', 'blog'),
+      '~home': path.join('E:/study/Myinfo/myinfo-site', 'src', 'domains', 'home'),
+      '~project': path.join('E:/study/Myinfo/myinfo-site', 'src', 'domains', 'project'),
+      '~resume': path.join('E:/study/Myinfo/myinfo-site', 'src', 'domains', 'resume'),
+      '~search': path.join('E:/study/Myinfo/myinfo-site', 'src', 'domains', 'search'),
+      '~site': path.join('E:/study/Myinfo/myinfo-site', 'src', 'domains', 'site'),
     })
   })
 })

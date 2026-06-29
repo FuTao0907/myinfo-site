@@ -1,4 +1,4 @@
-import HomeShowcase from '@/components/features/home/HomeShowcase'
+import HomeShowcase from '~home/components/HomeShowcase'
 
 /**
  * 渲染站点首页。

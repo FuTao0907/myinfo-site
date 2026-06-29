@@ -1,5 +1,5 @@
-import ProjectsClient from '@/components/features/project/ProjectsClient'
-import { getProjects } from '@/lib/public-content'
+import ProjectsClient from '~project/components/ProjectsClient'
+import { getProjects } from '~project/lib/projects'
 
 /**
  * 渲染项目列表页。

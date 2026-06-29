@@ -19,8 +19,8 @@
 ## Test Layout
 
 - 所有 Vitest 测试文件统一放在 `__tests__/`
-- 目前通过 `vitest.config.ts` 的 `include` 约束为 `__tests__/**/*.test.ts`
-- 如需新增测试，优先在 `__tests__/` 下按原模块路径建立对应目录
+- `vitest.config.ts` 通过 `include: ['__tests__/**/*.test.ts']` 只扫描测试目录
+- 如需新增测试，优先在 `__tests__/` 下按源码路径镜像建立对应目录
 
 ## Automation
 
@@ -32,12 +32,14 @@
 
 - `config/tooling/paths.mjs` 现在同时提供 TypeScript 风格与 Vitest 风格的别名映射函数
 - `vitest.config.ts` 直接复用 `config/tooling/paths.mjs` 的输出，避免再次手写 `@ -> src`
+- 当前同时支持 `@/*` 和 `~/*` 两组别名，其中 `~/*` 主要给 `app/` 层引用 `domains/` 和 `shared/` 使用
 - `tsconfig.json` 因为是 JSON 入口，不能直接导入 JavaScript 模块，所以当前仍需手动保持与 `config/tooling/paths.mjs` 一致
 - 如果后续要继续收敛，可以再评估把 TypeScript 路径别名拆到单独的 `tsconfig` 扩展文件
 
 ## Change Guide
 
 - 改 `@` 别名时，优先检查 `config/tooling/paths.mjs`，然后同步确认 `tsconfig.json`
+- 改 `~` 别名时，优先检查 `config/tooling/paths.mjs`，然后同步确认 `tsconfig.json`
 - 改 Tailwind 扫描范围时，优先检查 `config/tooling/shared.mjs`
 - 改 Next.js 页面扩展名时，优先检查 `config/tooling/shared.mjs`
 - 改忽略目录时，优先检查 `config/tooling/shared.mjs`
